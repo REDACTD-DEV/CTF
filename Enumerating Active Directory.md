@@ -1,6 +1,6 @@
 ## Enumerating Active Directory
 
-```bashshell
+```console
 root@ip-10-10-211-126:~# nslookup thmdc.za.tryhackme.com
 Server:		127.0.0.53
 Address:	127.0.0.53#53
