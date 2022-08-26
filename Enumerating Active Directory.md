@@ -60,33 +60,19 @@ Get-ADUser -Properties description -Filter * | Where-Object name -eq t0_tinus.gr
 ``` THM{Enumerating.Via.MMC} ```
 
 
-```console
-C:\Users\elliott.allen>net user aaron.harris /domain
-The request will be processed at a domain controller for domain za.tryhackme.com.
+Apart from the Domain Users group, what other group is the aaron.harris account a member of?
 
-User name                    aaron.harris
-Full Name                    Aaron Harris
-Comment
-User's comment
-Country/region code          000 (System Default)
-Account active               Yes
-Account expires              Never
-
-Password last set            2/24/2022 11:05:11 PM
-Password expires             Never
-Password changeable          2/24/2022 11:05:11 PM
-Password required            Yes
-User may change password     Yes
-
-Workstations allowed         All
-Logon script
-User profile
-Home directory
-Last logon                   Never
-
-Logon hours allowed          All
-
-Local Group Memberships
-Global Group memberships     *Domain Users         *Internet Access
-The command completed successfully.
+```batch
+net user aaron.harris /domain
 ```
+
+``` Internet Access ```
+
+
+Is the Guest account active?
+
+```batch
+net user Guest /domain
+```
+
+``` Account active               No ```
