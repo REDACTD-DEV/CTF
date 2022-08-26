@@ -13,3 +13,7 @@ Address: 10.200.58.101
 ``` Your credentials have been generated: Username: elliott.allen Password: Changeme123 ```
 
 
+How many Computer objects are part of the Servers OU?
+```posh (Get-ADComputer -Filter * | Where-Object DistinguishedName -like "*Servers*").count ```
+2
+
