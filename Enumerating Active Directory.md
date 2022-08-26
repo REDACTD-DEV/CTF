@@ -60,7 +60,7 @@ Get-ADUser -Properties description -Filter * | Where-Object name -eq t0_tinus.gr
 ``` THM{Enumerating.Via.MMC} ```
 
 
-```batch
+```console
 C:\Users\elliott.allen>net user aaron.harris /domain
 The request will be processed at a domain controller for domain za.tryhackme.com.
 
