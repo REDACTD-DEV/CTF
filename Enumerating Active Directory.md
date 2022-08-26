@@ -75,4 +75,63 @@ Is the Guest account active?
 net user Guest /domain
 ```
 
-``` Account active               No ```
+``` Account active: No ```
+
+
+How many accounts are a member of the Tier 1 Admins group?
+
+```batch
+net group "Tier 1 Admins" /domain
+```
+
+``` 7 ```
+
+
+What is the account lockout duration of the current password policy in minutes?
+
+```batch
+net accounts /domain
+```
+
+``` Lockout duration (minutes): 30 ```
+
+
+What is the value of the Title attribute of Beth Nolan (beth.nolan)?
+
+```posh
+get-aduser -Identity beth.nolan -Properties title | select title
+```
+
+``` Senior ```
+
+What is the value of the DistinguishedName attribute of Annette Manning (annette.manning)?
+
+```posh
+get-aduser -Identity annette.manning | select DistinguishedName
+```
+
+``` CN=annette.manning,OU=Marketing,OU=People,DC=za,DC=tryhackme,DC=com ```
+
+When was the Tier 2 Admins group created?
+
+```posh
+Get-ADGroup -Identity "Tier 2 Admins" -Properties Created | select Created
+```
+
+``` 2/24/2022 10:04:41 PM ```
+
+What is the value of the SID attribute of the Enterprise Admins group?
+
+```posh
+Get-ADGroup -Identity "Enterprise Admins" -Properties SID | select SID
+```
+
+``` S-1-5-21-3330634377-1326264276-632209373-519 ```
+
+Which container is used to store deleted AD objects?
+
+```posh
+Get-ADDomain | select DeletedObjectsContainer
+```
+
+``` CN=Deleted Objects,DC=za,DC=tryhackme,DC=com ```
