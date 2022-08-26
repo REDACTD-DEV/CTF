@@ -14,6 +14,8 @@ Address: 10.200.58.101
 
 
 How many Computer objects are part of the Servers OU?
+
 ```posh (Get-ADComputer -Filter * | Where-Object DistinguishedName -like "*Servers*").count ```
+
 2
 
