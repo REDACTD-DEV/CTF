@@ -19,5 +19,14 @@ How many Computer objects are part of the Servers OU?
 (Get-ADComputer -Filter * | Where-Object DistinguishedName -like "*Servers*").count
 ```
 
-2
+``` 2 ```
 
+
+How many Computer objects are part of the Workstations OU?
+
+```posh
+#On older versions of PowerShell, if count is 0 or 1, need to manually cast as an array or .count will not work.
+@(Get-ADComputer -Filter * | Where-Object DistinguishedName -like "*Workstations*").count
+```
+
+``` 1 ```
