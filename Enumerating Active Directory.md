@@ -30,3 +30,12 @@ How many Computer objects are part of the Workstations OU?
 ```
 
 ``` 1 ```
+
+
+How many departments (Organisational Units) does this organisation consist of?
+
+```posh
+(Get-ADObject -Filter * | Where-Object {($_.objectClass -like "*organizationalUnit*") -and ($_.distinguishedName -like "*People*")}).count
+```
+
+``` 8 ```
