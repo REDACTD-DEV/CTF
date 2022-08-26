@@ -35,7 +35,26 @@ How many Computer objects are part of the Workstations OU?
 How many departments (Organisational Units) does this organisation consist of?
 
 ```posh
-(Get-ADObject -Filter * | Where-Object {($_.objectClass -like "*organizationalUnit*") -and ($_.distinguishedName -like "*People*")}).count
+(Get-ADObject -Filter * | Where-Object {($_.objectClass -like "*organizationalUnit*") -and ($_.distinguishedName -like "*,OU=People*")}).count
 ```
 
-``` 8 ```
+``` 7 ```
+
+
+
+How many Admin tiers does this organisation have?
+
+```posh
+(Get-ADObject -Filter * | Where-Object {($_.objectClass -like "*organizationalUnit*") -and ($_.distinguishedName -like "*,OU=Admins*")}).count
+```
+
+``` 3 ```
+
+
+What is the value of the flag stored in the description attribute of the t0_tinus.green account?
+
+```posh
+Get-ADUser -Properties description -Filter * | Where-Object name -eq t0_tinus.green | select Description
+```
+
+``` THM{Enumerating.Via.MMC} ```
