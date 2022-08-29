@@ -1,3 +1,4 @@
+![Enumerating AD](https://assets.tryhackme.com/room-banners/attacking-ad.png)
 ## Enumerating Active Directory
 
 ```console
