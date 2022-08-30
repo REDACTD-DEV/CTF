@@ -1,8 +1,6 @@
 ![Windows Event Logs](https://assets.tryhackme.com/additional/win-event-logs/wel-room-banner2.png)
-## Windows Event Logs
-
-
-
+# Windows Event Logs
+## Event Viewer
 For the questions below, use Event Viewer to analyze Microsoft-Windows-PowerShell/Operational log.
 
 What is the Event ID for the first event?
@@ -39,4 +37,28 @@ Get-WinEvent -LogName "Windows PowerShell" | Where-Object Id -eq 800 | Select-Ob
 
 ``` Pipeline Execution Details ```
 
+## wevtutil.exe
+How many log names are in the machine? 
+
+``` Answer format: **** ```
+
+
+What is the definition for the query-events command?
+
+``` Answer format: **** ```
+What option would you use to provide a path to a log file?
+
+``` Answer format: **** ```
+What is the VALUE for /q?
+``` Answer format: **** ```
+The questions below are based on this command: wevtutil qe Application /c:3 /rd:true /f:text
+
+No answer needed
+What is the log name?
+
+``` Answer format: **** ```
+What is the /rd option for?
+
+``` Answer format: **** ```
+What is the /c option for?
 
