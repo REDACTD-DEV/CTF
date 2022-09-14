@@ -1,3 +1,4 @@
+## Inital configuration on all servers
 ```posh
 #Rename the server
 Rename-Computer -NewName DC1
@@ -10,13 +11,19 @@ New-NetIPAddress –IPAddress 192.168.1.10 -DefaultGateway 192.168.1.1 -PrefixLe
 
 #Configure DNS Settings
 Set-DNSClientServerAddress –InterfaceIndex (Get-NetAdapter).InterfaceIndex –ServerAddresses 192.168.1.10 
+```
 
+## Install AD DS
+```posh
 #Install AD DS server role
 Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 
 #Configure server as a domain controller
 Install-ADDSForest -DomainName ad.contoso.com -DomainNetBIOSName AD -InstallDNS
 
+```
+## Install and configure DHCP server
+```posh
 #Install DCHP server role
 Install-WindowsFeature DHCP -IncludeManagementTools
 
@@ -41,5 +48,4 @@ Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.1.10 -ScopeID 192.168.1.0
 
 #Specify default DNS server
 Set-DhcpServerv4OptionValue -DnsDomain corp.contoso.com -DnsServer 192.168.1.10
-
 ```
