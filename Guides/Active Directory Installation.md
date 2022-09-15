@@ -7,10 +7,20 @@ Rename-Computer -NewName DC1
 Restart-Computer
 
 #Set IP Address (Change InterfaceIndex param if there's more than one NIC)
-New-NetIPAddress –IPAddress 192.168.1.10 -DefaultGateway 192.168.1.1 -PrefixLength 24 -InterfaceIndex (Get-NetAdapter).InterfaceIndex
+$Params = @{
+  IPAddress         = "192.168.1.10"
+  DefaultGateway    = "192.168.1.1"
+  PrefixLength      = "24"
+  InterfaceIndex    = (Get-NetAdapter).InterfaceIndex
+}
+New-NetIPAddress @Params
 
 #Configure DNS Settings
-Set-DNSClientServerAddress –InterfaceIndex (Get-NetAdapter).InterfaceIndex –ServerAddresses 192.168.1.10 
+$Params = @{
+  ServerAddresses   = "192.168.1.10"
+  InterfaceIndex    = (Get-NetAdapter).InterfaceIndex
+}
+Set-DNSClientServerAddress @Params
 ```
 
 ## Install AD DS
