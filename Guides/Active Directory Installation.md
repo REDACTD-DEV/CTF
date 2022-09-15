@@ -45,7 +45,12 @@ Restart-Service dhcpserver
 Add-DhcpServerInDC -DnsName ad.contoso.com
 
 #Notify Server Manager that DCHP installation is complete, since it doesn't do this automatically
-Set-ItemProperty –Path registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12 –Name ConfigurationState –Value 2
+$Params = @{
+    Path  = registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12
+    Name  = ConfigurationState
+    Value = 2
+}
+Set-ItemProperty @Params
 
 #Configure DHCP Scope
 Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.1.50 -EndRange 192.168.1.254 -SubnetMask 255.255.255.0 -State Active
@@ -59,3 +64,4 @@ Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.1.10 -ScopeID 192.168.1.0
 #Specify default DNS server
 Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.1.10
 ```
+
