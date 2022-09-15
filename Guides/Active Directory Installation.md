@@ -46,9 +46,9 @@ Add-DhcpServerInDC -DnsName ad.contoso.com
 
 #Notify Server Manager that DCHP installation is complete, since it doesn't do this automatically
 $Params = @{
-    Path  = registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12
-    Name  = ConfigurationState
-    Value = 2
+    Path  = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12"
+    Name  = "ConfigurationState"
+    Value = "2"
 }
 Set-ItemProperty @Params
 
