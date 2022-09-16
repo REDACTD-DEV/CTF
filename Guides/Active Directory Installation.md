@@ -30,8 +30,27 @@ Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 
 #Configure server as a domain controller
 Install-ADDSForest -DomainName ad.contoso.com -DomainNetBIOSName AD -InstallDNS
-
 ```
+## Basic AD Configuration
+```posh
+#Create OU's
+#Base OU
+New-ADOrganizationalUnit “Contoso” –path “DC=ad,DC=contoso,DC=com”
+#Devices
+New-ADOrganizationalUnit “Devices” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Servers” –path “OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Workstations” –path “OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com”
+#Users
+New-ADOrganizationalUnit “Users” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Admins” –path “OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Employees” –path “OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
+#Groups
+New-ADOrganizationalUnit “Groups” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “SecurityGroups” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “DistributionLists” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADGroup “Contosot” -path ‘OU=Groups,OU=Rome,OU=IT,dc=bobcares,DC=com’
+```
+
 ## Install and configure DHCP server
 ```posh
 #Install DCHP server role
@@ -74,11 +93,27 @@ $Params = @{
     AccountPassword       = (Read-Host -AsSecureString "ChangeM3!")
     Enabled               = $true
     ChangePasswordAtLogon = $true
-    DisplayName           = John Smith - Admin
-    Path                  = 
+    DisplayName           = "John Smith - Admin"
+    Path                  = “OU=Admins,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
 }
 New-ADUser @Params
+
+#New domain user
+$Params = @{
+    Name                  = "John.Smith"
+    AccountPassword       = (Read-Host -AsSecureString "ChangeM3!")
+    Enabled               = $true
+    ChangePasswordAtLogon = $true
+    DisplayName           = "John Smith"
+    Company               = "Contoso"
+    Department            = "Information Technology"
+    Path                  = “OU=Employees,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
+}
+New-ADUser @Params
+
 ```
+
+
 
 ## Create file share
 ```posh
@@ -86,7 +121,7 @@ New-ADUser @Params
 New-Item "D:\Data\NetworkShare" -Type Directory
 
 $Params = @{
-    Name                  = "VMSFiles"
+    Name                  = "NetworkShare"
     EncryptData           = $true
     Path                  = "C:\Data\NetworkShare"
     FullAccess            = "Domain Admins"
@@ -96,8 +131,12 @@ $Params = @{
 New-SmbShare @Params
 ```
 
-## Create Home Drive for users
+## Drive Mapping
 ```posh
-#Create share folder
-New-Item "D:\Data\HomeShare" -Type Directory
+#Create GPO to map the drive
+$Params @{
+    Name    = "TestGPO"
+    Comment = "This is a test GPO."  
+}
+New-GPO @Params
 ```
