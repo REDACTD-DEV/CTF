@@ -65,3 +65,39 @@ Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.1.10 -ScopeID 192.168.1.0
 Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.1.10
 ```
 
+## Create users
+
+```posh
+#New admin user
+$Params = @{
+    Name  = "Admin-John.Smith"
+    AccountPassword = (Read-Host -AsSecureString "ChangeM3!")
+    Enabled = $true
+    ChangePasswordAtLogon = $true
+    DisplayName = John Smith - Admin
+    Path  = 
+}
+New-ADUser @Params
+```
+
+## Create file share
+```posh
+#Create share folder
+New-Item "D:\Data\NetworkShare" -Type Directory
+
+$Params = @{
+    Name                  = "VMSFiles"
+    EncryptData           = $true
+    Path                  = "C:\Data\NetworkShare"
+    FullAccess            = "Domain Admins"
+    ReadAccess            = "Domain Users"
+    FolderEnumerationMode = "AccessBased"
+}
+New-SmbShare @Params
+```
+
+## Create Home Drive for users
+```posh
+#Create share folder
+New-Item "D:\Data\HomeShare" -Type Directory
+```
