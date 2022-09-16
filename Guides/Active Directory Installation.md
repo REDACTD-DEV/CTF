@@ -85,7 +85,6 @@ Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.1.10
 ```
 
 ## Create users
-
 ```posh
 #New admin user
 $Params = @{
@@ -123,7 +122,7 @@ New-Item "D:\Data\NetworkShare" -Type Directory
 $Params = @{
     Name                  = "NetworkShare"
     EncryptData           = $true
-    Path                  = "C:\Data\NetworkShare"
+    Path                  = "D:\Data\NetworkShare"
     FullAccess            = "Domain Admins"
     ReadAccess            = "Domain Users"
     FolderEnumerationMode = "AccessBased"
