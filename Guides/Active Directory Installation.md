@@ -70,12 +70,12 @@ Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.1.10
 ```posh
 #New admin user
 $Params = @{
-    Name  = "Admin-John.Smith"
-    AccountPassword = (Read-Host -AsSecureString "ChangeM3!")
-    Enabled = $true
+    Name                  = "Admin-John.Smith"
+    AccountPassword       = (Read-Host -AsSecureString "ChangeM3!")
+    Enabled               = $true
     ChangePasswordAtLogon = $true
-    DisplayName = John Smith - Admin
-    Path  = 
+    DisplayName           = John Smith - Admin
+    Path                  = 
 }
 New-ADUser @Params
 ```
