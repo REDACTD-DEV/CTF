@@ -89,7 +89,7 @@ Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
 #New admin user
 $Params = @{
     Name                  = "Admin-John.Smith"
-    AccountPassword       = (Read-Host -AsSecureString "ChangeM3!")
+    AccountPassword       = (Read-Host -AsSecureString "Enter Password:")
     Enabled               = $true
     ChangePasswordAtLogon = $true
     DisplayName           = "John Smith - Admin"
@@ -100,7 +100,7 @@ New-ADUser @Params
 #New domain user
 $Params = @{
     Name                  = "John.Smith"
-    AccountPassword       = (Read-Host -AsSecureString "ChangeM3!")
+    AccountPassword       = (Read-Host -AsSecureString "Enter Password:")
     Enabled               = $true
     ChangePasswordAtLogon = $true
     DisplayName           = "John Smith"
