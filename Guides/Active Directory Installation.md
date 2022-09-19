@@ -129,6 +129,11 @@ Add-Computer @Params
 
 ## Create file share
 ```posh
+#Bring data disk online
+Initialize-Disk -Number 1
+#Partition and format
+New-Partition -DiskNumber 1 -UseMaximumSize | Format-Volume -FileSystem NTFS -NewFileSystemLabel Data
+
 #Create share folder
 New-Item "D:\Data\NetworkShare" -Type Directory
 
