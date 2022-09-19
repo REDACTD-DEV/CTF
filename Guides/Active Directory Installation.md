@@ -141,11 +141,10 @@ New-Item "D:\Data\NetworkShare" -Type Directory
 
 $Params = @{
     Name                  = "NetworkShare"
-    EncryptData           = $true
     Path                  = "D:\Data\NetworkShare"
     FullAccess            = "Domain Admins"
     ReadAccess            = "Domain Users"
-    FolderEnumerationMode = "AccessBased"
+    FolderEnumerationMode = "Unrestricted"
 }
 New-SmbShare @Params
 ```
