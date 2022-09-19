@@ -48,7 +48,6 @@ New-ADOrganizationalUnit “Employees” –path “OU=Users,OU=Contoso,DC=ad,DC
 New-ADOrganizationalUnit “Groups” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
 New-ADOrganizationalUnit “SecurityGroups” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
 New-ADOrganizationalUnit “DistributionLists” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADGroup “Contosot” -path ‘OU=Groups,OU=Rome,OU=IT,dc=bobcares,DC=com’
 ```
 
 ## Install and configure DHCP server
