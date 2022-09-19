@@ -96,6 +96,8 @@ $Params = @{
     Path                  = “OU=Admins,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
 }
 New-ADUser @Params
+#Add admin to Domain Admins group
+Add-ADGroupMember -Identity "Domain Admins" -Members "Admin-John.Smith"
 
 #New domain user
 $Params = @{
