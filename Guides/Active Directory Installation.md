@@ -193,3 +193,7 @@ New-Item -Path $path -type Directory | Out-Null
 </Drive>
 </Drives>
 ```
+
+```posh
+#Edit AD Attribute "gPCUserExtensionNames"
+Set-ADObject -Identity "CN={8CABA6AF-59A2-4044-BEBD-4431E202571B},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]}
