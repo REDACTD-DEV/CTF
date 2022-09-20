@@ -87,6 +87,9 @@ Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.
 
 #Specify default DNS server
 Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
+
+#Set a DHCP reservation
+Set-DhcpServerv4Reservation -ComputerName "dc1.ad.contoso.com" -IPAddress 192.168.10.11 -ScopeID 192.168.10.0 -Description "WSUS" -Name "wsus.ad.contoso.com"
 ```
 
 ## Create users
@@ -166,8 +169,10 @@ New-SmbShare @Params
 ```posh
 #Create GPO to map the drive
 $Params @{
-    Name    = "TestGPO"
-    Comment = "This is a test GPO."  
+    Name    = "Mapped Drive"
+    Comment = "Drive Mapping for NetworkShare"  
 }
 New-GPO @Params
+Set-GPRegistryValue -Name "Mapped Drive" -Key "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop" -ValueName "ScreenSaveTimeOut" -Type DWORD -Value 90
+
 ```
