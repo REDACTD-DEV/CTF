@@ -104,3 +104,15 @@ $subscription.SynchronizeAutomatically = $true
 $subscription.SynchronizeAutomaticallyTimeOfDay= (New-TimeSpan -Hours 0)
 $subscription.NumberOfSynchronizationsPerDay=1
 $subscription.Save()
+
+
+```
+
+## Create GPO to force computers to use WSUS over Windows Update
+```posh
+$Params @{
+    Name    = "WSUS"
+    Comment = "Group policy settings for WSUS"  
+}
+New-GPO @Params
+```
