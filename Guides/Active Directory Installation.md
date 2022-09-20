@@ -4,7 +4,7 @@
 Rename-Computer -NewName DC1
 
 #Restart the server
-Restart-Computer
+Restart-Computer -Force
 
 #Set IP Address (Change InterfaceIndex param if there's more than one NIC)
 $Params = @{
@@ -116,13 +116,15 @@ $Params = @{
     Path                  = “OU=Employees,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
 }
 New-ADUser @Params
+#Will have issues logging in through Hyper-V if not in this group
+Add-ADGroupMember -Identity "Remote Desktop Users" -Members "John.Smith"
 
 ```
 
 ## Join a computer to an existing domain
 ```posh
 #Run from an elevated powershell console
-$Params @{
+$Params = @{
 	DomainName	=	"ad.contoso.com"
 	OUPath		=	"OU=Workstations,OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com"
 	Credential	=	"ad.contoso.com\Administrator"
