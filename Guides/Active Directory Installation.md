@@ -121,6 +121,7 @@ New-ADUser @Params
 
 ## Join a computer to an existing domain
 ```posh
+#Run from an elevated powershell console
 $Params @{
 	DomainName	=	"ad.contoso.com"
 	OUPath		=	"OU=Workstations,OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com"
@@ -130,6 +131,11 @@ $Params @{
 	Restart		=	$true
 }
 Add-Computer @Params
+```
+
+## Install RSAT
+```posh
+Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online
 ```
 
 ## Create file share
