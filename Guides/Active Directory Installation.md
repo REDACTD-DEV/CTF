@@ -77,7 +77,7 @@ Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.10.50 -EndRange 192.16
 Add-DhcpServerv4ExclusionRange -ScopeID 192.168.10.0 -StartRange 192.168.10.1 -EndRange 192.168.10.49
 
 #Specify default gateway 
-Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.10 -ScopeID 192.168.10.0 -ComputerName DC1.ad.contoso.com
+Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.0 -ComputerName DC1.ad.contoso.com
 
 #Specify default DNS server
 Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
