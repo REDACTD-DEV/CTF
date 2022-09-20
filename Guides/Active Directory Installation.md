@@ -125,7 +125,7 @@ $Params @{
 	DomainName	=	"ad.contoso.com"
 	OUPath		=	"OU=Workstations,OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com"
 	Credential	=	"ad.contoso.com\Administrator"
-	NewName		=	Get-WmiObject Win32_BIOS | Select SerialNumber #Sets Name as Serial
+	NewName		=	(Get-WmiObject Win32_BIOS).SerialNumber #Sets Name as Serial
 	Force		=	$true
 	Restart		=	$true
 }
