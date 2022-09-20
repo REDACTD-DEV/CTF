@@ -65,6 +65,9 @@ $wsusConfig.Save()
 $subscription = $wsus.GetSubscription()
 $subscription.StartSynchronizationForCategoryOnly()
 
+#Disable all products before explicity setting products as some are enabled by default
+Get-WsusProduct | Set-WsusProduct -Disable
+
 #Set products to get updates for
 Get-WsusProduct | where-Object {
 	$_.Product.Title -in (
@@ -89,14 +92,6 @@ Get-WsusProduct | where-Object {
 		'Windows Subsystem for Linux')
 }  | Set-WsusProduct
 
-#For some reason the above sets the entire Windows product set, or it's set by default
-
-Get-WsusProduct | where-Object {
-    $_.Product.Title -in (
-	'Windows'
-)
-} | Set-WsusProduct -Disable
-
 #Configure synchronization
 $subscription.SynchronizeAutomatically = $true
 
@@ -105,6 +100,20 @@ $subscription.SynchronizeAutomaticallyTimeOfDay= (New-TimeSpan -Hours 0)
 $subscription.NumberOfSynchronizationsPerDay=1
 $subscription.Save()
 
+
+#Configuring default automatic approval rule
+[void][reflection.assembly]::LoadWithPartialName("Microsoft.UpdateServices.Administration")
+$rule = $wsus.GetInstallApprovalRules() | Where {
+    $_.Name -eq "Default Automatic Approval Rule"}
+$class = $wsus.GetUpdateClassifications()
+$class_coll = New-Object Microsoft.UpdateServices.Administration.UpdateClassificationCollection
+$class_coll.AddRange($class)
+$rule.SetUpdateClassifications($class_coll)
+$rule.Enabled = $True
+$rule.Save()
+
+#Run rule
+$Apply = $rule.ApplyRule()
 
 ```
 
