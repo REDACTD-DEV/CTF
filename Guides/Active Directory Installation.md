@@ -31,6 +31,12 @@ Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 #Configure server as a domain controller
 Install-ADDSForest -DomainName ad.contoso.com -DomainNetBIOSName AD -InstallDNS
 ```
+
+## DNS server configuration
+```posh
+Set-DnsServerForwarder -IPAddress "1.1.1.1" -PassThru
+```
+
 ## Basic AD Configuration
 ```posh
 #Create OU's
