@@ -179,40 +179,11 @@ New-Item -Path $path -type Directory | Out-Null
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Drives clsid="{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}">
-
-<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" name="U:" status="U:" image="2" changed="2016-04-26 12:48:12" uid="{84C18D69-0123-4C9E-B940-B68D535189AD}" bypassErrors="1">
-
-<Properties action="U" thisDrive="SHOW" allDrives="HIDE" userName="" path="\\test.local\Qloudwise\Entity2\Common\Share" label="Entity2" persistent="1" useLetter="1" letter="U"/>
-
-<Filters>
-
-<FilterGroup bool="AND" not="0" name="LOCAL\Entity2" sid="S-1-5-21-1769619743-4051896648-2154897795-1156" userContext="1" primaryGroup="0" localGroup="0"/>
-
-</Filters>
-
-</Drive>
-</Drives>
-```
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-
--<Drives clsid="{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}">
-
-
--<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" bypassErrors="1" uid="{4B9E8CEA-8C58-4CCC-9296-09E2B20AAECE}" changed="2022-09-20 11:39:18" image="2" status="M:" name="U:">
-
-<Properties letter="M" useLetter="1" persistent="1" label="NetworkShare" path="\\ad.contoso.com\NetworkShare" userName="" allDrives="HIDE" thisDrive="SHOW" action="U"/>
-
-
--<Filters>
-
-<FilterGroup name="AD\Domain Users" localGroup="0" primaryGroup="0" userContext="1" sid="S-1-5-21-1940272392-1386316869-3352080551-513" not="0" bool="AND"/>
-
-</Filters>
-
-</Drive>
-
+	<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" name="U:" status="M:" image="2" changed="2022-09-20 11:39:18" uid="{4B9E8CEA-8C58-4CCC-9296-09E2B20AAECE}" bypassErrors="1">
+		<Properties action="U" thisDrive="SHOW" allDrives="HIDE" userName="" path="\\ad.contoso.com\NetworkShare" label="NetworkShare" persistent="1" useLetter="1" letter="M"/>
+		<Filters>
+			<FilterGroup bool="AND" not="0" name="AD\Domain Users" sid="S-1-5-21-1940272392-1386316869-3352080551-513" userContext="1" primaryGroup="0" localGroup="0"/></Filters>
+	</Drive>
 </Drives>
 ```
 
