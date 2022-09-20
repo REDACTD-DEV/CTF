@@ -194,6 +194,28 @@ New-Item -Path $path -type Directory | Out-Null
 </Drives>
 ```
 
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+-<Drives clsid="{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}">
+
+
+-<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" bypassErrors="1" uid="{4B9E8CEA-8C58-4CCC-9296-09E2B20AAECE}" changed="2022-09-20 11:39:18" image="2" status="M:" name="U:">
+
+<Properties letter="M" useLetter="1" persistent="1" label="NetworkShare" path="\\ad.contoso.com\NetworkShare" userName="" allDrives="HIDE" thisDrive="SHOW" action="U"/>
+
+
+-<Filters>
+
+<FilterGroup name="AD\Domain Users" localGroup="0" primaryGroup="0" userContext="1" sid="S-1-5-21-1940272392-1386316869-3352080551-513" not="0" bool="AND"/>
+
+</Filters>
+
+</Drive>
+
+</Drives>
+```
+
 ```posh
 #Edit AD Attribute "gPCUserExtensionNames"
 Set-ADObject -Identity "CN={8CABA6AF-59A2-4044-BEBD-4431E202571B},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]}
