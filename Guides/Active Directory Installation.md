@@ -167,12 +167,29 @@ New-SmbShare @Params
 
 ## Drive Mapping
 ```posh
-#Create GPO to map the drive
-$Params @{
-    Name    = "Mapped Drive"
-    Comment = "Drive Mapping for NetworkShare"  
-}
-New-GPO @Params
-Set-GPRegistryValue -Name "Mapped Drive" -Key "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop" -ValueName "ScreenSaveTimeOut" -Type DWORD -Value 90
+$OU = "Employees"
+$gpoOuObj=new-gpo -name $OU
+new-gplink -Guid $gpoOuObj.Id.Guid -target "OU=Employees,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com"
+$guid = $gpoOuObj.Id.Guid.ToUpper()
+$path="\\ad.contoso.com\SYSVOL\ad.contoso.com\Policies\{$guid}\User\Preferences\Drives"
+New-Item -Path $path -type Directory | Out-Null
 
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Drives clsid="{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}">
+
+<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" name="U:" status="U:" image="2" changed="2016-04-26 12:48:12" uid="{84C18D69-0123-4C9E-B940-B68D535189AD}" bypassErrors="1">
+
+<Properties action="U" thisDrive="SHOW" allDrives="HIDE" userName="" path="\\test.local\Qloudwise\Entity2\Common\Share" label="Entity2" persistent="1" useLetter="1" letter="U"/>
+
+<Filters>
+
+<FilterGroup bool="AND" not="0" name="LOCAL\Entity2" sid="S-1-5-21-1769619743-4051896648-2154897795-1156" userContext="1" primaryGroup="0" localGroup="0"/>
+
+</Filters>
+
+</Drive>
+</Drives>
 ```
