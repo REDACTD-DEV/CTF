@@ -1,5 +1,5 @@
- - [ ] Test drive mapping GPO from scratch
- - [ ] Clean up script for drive mapping
+ - [x] Test drive mapping GPO from scratch
+ - [x] Clean up script for drive mapping
  - [ ] WSUS Classification update
  - [ ] create script for WSUS GPO
  - [ ] computer groups within WSUS
