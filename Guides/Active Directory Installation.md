@@ -217,7 +217,8 @@ $data | out-file $path\drives.xml -Encoding "utf8"
 $ExtensionNames = "[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]"
 Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=$ExtensionNames}
 
-#Edit something random so it increments the version number properly
+#A versionNumber of 0 means that clients won't get the policy since it hasn't changed
+#Edit something random (and easy) so it increments the versionNumber properly
 #This one removes the computer icon from the desktop.
 @Params = @{
     Name      = "All Staff Mapped Drive"
