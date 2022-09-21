@@ -187,7 +187,6 @@ New-Item -Path $path -type Directory | Out-Null
 #Variables that would normally be set in the Drive Mapping dialog box
 $Letter     = "M"
 $Label      = "NetworkShare"
-
 $SharePath  = "\\ad.contoso.com\NetworkShare"
 $ILT        = "AD\All-Staff"
 $SID        = (Get-ADGroup "All-Staff").SID.Value
@@ -220,6 +219,13 @@ Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com
 
 #Edit something random so it increments the version number properly
 #This one removes the computer icon from the desktop.
-set-GPRegistryValue -Name "All Staff Mapped Drive" -Key "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Type DWORD -ValueName "{645FF040-5081-101B-9F08-00AA002F954E}" -Value 1
+@Params = @{
+    Name      = "All Staff Mapped Drive"
+    Key       = "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\NonEnum"
+    Type      = DWORD
+    ValueName = "{645FF040-5081-101B-9F08-00AA002F954E}"
+    Value     = 1
+}
+set-GPRegistryValue @Params
 ```
 
