@@ -206,7 +206,7 @@ $data       = @"
 	<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" bypassErrors="1" uid="{$RandomGuid}" changed="$Date" image="2" status="${Letter}:" name="${Letter}:">
 		<Properties letter="$Letter" useLetter="1" persistent="1" label="$Label" path="$SharePath" userName="" allDrives="SHOW" thisDrive="SHOW" action="U"/>
 		<Filters>
-			<FilterGroup bool="AND" not="0" name="$ILT" sid="$SID" userContext="1" primaryGroup="0" localGroup="0"/>
+      <FilterGroup bool="AND" not="0" name="$ILT" sid="$SID" userContext="1" primaryGroup="0" localGroup="0"/>
     </Filters>
 	</Drive>
 </Drives>
@@ -218,22 +218,8 @@ $data | out-file $path\drives.xml -Encoding "utf8"
 $ExtensionNames = "[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]"
 Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=$ExtensionNames}
 
-#If the version number is 0, clients don't pick up the policy.
-#Version is written in DEC, but is actually 2 separate hex values that contain the versionNumber for User and Computer.
-#65535 is version 0001 for User and 0000 for Computer (Drive mapping is a user policy)
-#Clear what's in the attribute
-Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Clear versionNumber
-#Insert 65535
-Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{versionNumber=65536}
-#VersionNumber also exists in GPT.INI, so this needs to be edited too
-$basepath = "\\ad.contoso.com\SYSVOL\ad.contoso.com\Policies\{$guid}"
-$data = @"
-[General]
-Version=65536
-displayName=New Group Policy Object
-"@
-$data | Out-File $basepath\GPT.INI -Encoding "utf8"
-
-
+#Edit something random so it increments the version number properly
+#This one removes the computer icon from the desktop.
+set-GPRegistryValue -Name "All Staff Mapped Drive" -Key "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Type DWORD -ValueName "{645FF040-5081-101B-9F08-00AA002F954E}" -Value 1
 ```
 
