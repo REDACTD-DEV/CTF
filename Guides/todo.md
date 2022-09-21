@@ -3,5 +3,5 @@
  - [ ] WSUS Classification update
  - [ ] create script for WSUS GPO
  - [ ] computer groups within WSUS
- - [ ] hyper-v vm deployment scripts for each machine
+ - [x] hyper-v vm deployment scripts for each machine
  
