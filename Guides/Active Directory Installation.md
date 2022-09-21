@@ -173,20 +173,28 @@ new-gplink -Guid $gpoOuObj.Id.Guid -target "OU=Employees,OU=Users,OU=Contoso,DC=
 $guid = $gpoOuObj.Id.Guid.ToUpper()
 $path="\\ad.contoso.com\SYSVOL\ad.contoso.com\Policies\{$guid}\User\Preferences\Drives"
 New-Item -Path $path -type Directory | Out-Null
-
-```
-
-```xml
+$Letter     = "M"
+$Label      = "NetworkShare"
+$Date       = Get-Date -Format "yyyy-MM-dd hh:mm:ss"
+$SharePath  = "\\ad.contoso.com\NetworkShare"
+$ILT        = "AD\Domain Users"
+$SID        = (Get-ADGroup "Domain Users").SID.Value
+$RandomGuid = New-Guid
+$RandomGuid = $RandomGuid.Guid.ToUpper()
+$data       = @"
 <?xml version="1.0" encoding="utf-8"?>
-<Drives clsid="{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}">
-	<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" name="U:" status="M:" image="2" changed="2022-09-20 11:39:18" uid="{4B9E8CEA-8C58-4CCC-9296-09E2B20AAECE}" bypassErrors="1">
-		<Properties action="U" thisDrive="SHOW" allDrives="HIDE" userName="" path="\\ad.contoso.com\NetworkShare" label="NetworkShare" persistent="1" useLetter="1" letter="M"/>
+<Drives clsid="{$guid}">
+	<Drive clsid="{935D1B74-9CB8-4e3c-9914-7DD559B7A417}" name="U:" status="M:" image="2" changed="$Date" uid="{$RandomGuid}" bypassErrors="1">
+		<Properties action="U" thisDrive="SHOW" allDrives="SHOW" userName="" path="$SharePath" label="$Label" persistent="1" useLetter="1" letter="$Letter"/>
 		<Filters>
-			<FilterGroup bool="AND" not="0" name="AD\Domain Users" sid="S-1-5-21-1940272392-1386316869-3352080551-513" userContext="1" primaryGroup="0" localGroup="0"/></Filters>
+			<FilterGroup bool="AND" not="0" name="$ILT" sid="$SID" userContext="1" primaryGroup="0" localGroup="0"/></Filters>
 	</Drive>
 </Drives>
-```
+"@
+$data | out-file $path\drives.xml -Encoding "utf8"
 
-```posh
 #Edit AD Attribute "gPCUserExtensionNames"
-Set-ADObject -Identity "CN={8CABA6AF-59A2-4044-BEBD-4431E202571B},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]}
+$ExtensionNames = "[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]"
+Set-ADObject -Identity "CN={$guid},CN=Policies,CN=System,DC=ad,DC=contoso,DC=com" -Add @{gPCUserExtensionNames=$ExtensionNames}
+
+```
