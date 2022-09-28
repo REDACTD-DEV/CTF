@@ -42,8 +42,7 @@ Foreach ($VMName in $VMNames) {
         VMName = $VMName
         Path = "E:\ISO\WINDOWS-SERVER-22.ISO"
     }
-    if($VMName -eq "WinClient") {$Params['Path'] = "E:\ISO\Windows-22H1.iso"}
-    if($VMName -eq "pfSense") {$Params['Path'] = "E:\ISO\pfSense.iso"}
+    if($VMName -eq "20742-WinClient") {$Params['Path'] = "E:\ISO\Windows-22H1.iso"}
     Add-VMDvdDrive @Params
 
     #Create OS Drive
