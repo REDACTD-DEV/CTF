@@ -1,6 +1,6 @@
 # Deploy VMs
 ```posh
-$VMNames = @(‘DC1’,’WinServer’,’WinClient’)
+$VMNames = @(‘20742-DC1’,’20742-FS01’,’20742-WinClient’)
 Foreach ($VMName in $VMNames) {
     $Params = @{
         Name = $VMName
@@ -33,7 +33,7 @@ Foreach ($VMName in $VMNames) {
     #Add Installer ISO
     $Params = @{
         VMName = $VMName
-        Path = "E:\ISO\WINSERVER.ISO"
+        Path = "E:\ISO\WINDOWS-SERVER-22.ISO"
     }
     if($VMName -eq "WinClient") {$Params['Path'] = "E:\ISO\Windows.iso"}
     if($VMName -eq "pfSense") {$Params['Path'] = "E:\ISO\pfSense.iso"}
@@ -77,7 +77,7 @@ Foreach ($VMName in $VMNames) {
 ```
 
 # DC1
-## Inital configuration
+## Initial configuration
 ```posh
 #Rename the server
 Rename-Computer -NewName DC1
@@ -235,6 +235,9 @@ Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online
 ```posh
 #Rename the server
 Rename-Computer -NewName FS01
+
+#Restart computer
+Restart-Computer -Force
 
 #Set IP Address (Change InterfaceIndex param if there's more than one NIC)
 $Params = @{
