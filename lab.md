@@ -1,6 +1,6 @@
 # Deploy VMs
 ```posh
-$VMNames = @(‘FS01’,‘DC1’,’DHCP’,’WinClient’)
+$VMNames = @(‘DC1’,’WinServer’,’WinClient’)
 Foreach ($VMName in $VMNames) {
     $Params = @{
         Name = $VMName
@@ -116,6 +116,42 @@ Install-ADDSForest -DomainName ad.contoso.com -DomainNetBIOSName AD -InstallDNS
 Set-DnsServerForwarder -IPAddress "1.1.1.1" -PassThru
 ```
 
+## Install and configure DHCP server
+```posh
+#Install DCHP server role
+Install-WindowsFeature DHCP -IncludeManagementTools
+
+#Add required DHCP security groups on server and restart service
+netsh dhcp add securitygroups
+Restart-Service dhcpserver
+
+#Authorize DHCP Server in AD
+Add-DhcpServerInDC -DnsName dhcp.ad.contoso.com
+
+#Notify Server Manager that DCHP installation is complete, since it doesn't do this automatically
+$Params = @{
+    Path = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12"
+    Name = "ConfigurationState"
+    Value = "2"
+}
+Set-ItemProperty @Params
+
+#Configure DHCP Scope
+Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.10.50 -EndRange 192.168.10.254 -SubnetMask 255.255.255.0 -State Active
+
+#Exclude address range
+Add-DhcpServerv4ExclusionRange -ScopeID 192.168.10.0 -StartRange 192.168.10.1 -EndRange 192.168.10.49
+
+#Specify default gateway 
+Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.0 -ComputerName dhcp.ad.contoso.com
+
+#Specify default DNS server
+Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
+
+#Set a DHCP reservation
+Set-DhcpServerv4Reservation -ComputerName "dc1.ad.contoso.com" -IPAddress 192.168.10.11 -ScopeID 192.168.10.0 -Description "WSUS" -Name "wsus.ad.contoso.com"
+```
+
 ## Basic AD Configuration
 ```posh
 #Create OU's
@@ -195,13 +231,14 @@ Add-Computer @Params
 Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online
 ```
 
-
-# DHCP
-## Inital configuration
+## Initial Configuration
 ```posh
+#Rename the server
+Rename-Computer -NewName FS01
+
 #Set IP Address (Change InterfaceIndex param if there's more than one NIC)
 $Params = @{
-  IPAddress = "192.168.10.12"
+  IPAddress = "192.168.10.13"
   DefaultGateway = "192.168.10.1"
   PrefixLength = "24"
   InterfaceIndex = (Get-NetAdapter).InterfaceIndex
@@ -214,6 +251,7 @@ $Params = @{
   InterfaceIndex = (Get-NetAdapter).InterfaceIndex
 }
 Set-DNSClientServerAddress @Params
+```
 
 ## Join server to an existing domain
 ```posh
@@ -221,45 +259,8 @@ $Params = @{
 	DomainName = "ad.contoso.com"
 	OUPath = "OU=Servers,OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com"
 	Credential = "ad.contoso.com\Administrator"
-	NewName = "DHCP"
-	Force = $true
+	Force =	$true
 	Restart = $true
 }
 Add-Computer @Params
-```
-
-## Install and configure DHCP server
-```posh
-#Install DCHP server role
-Install-WindowsFeature DHCP -IncludeManagementTools
-
-#Add required DHCP security groups on server and restart service
-netsh dhcp add securitygroups
-Restart-Service dhcpserver
-
-#Authorize DHCP Server in AD
-Add-DhcpServerInDC -DnsName dhcp.ad.contoso.com
-
-#Notify Server Manager that DCHP installation is complete, since it doesn't do this automatically
-$Params = @{
-    Path = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12"
-    Name = "ConfigurationState"
-    Value = "2"
-}
-Set-ItemProperty @Params
-
-#Configure DHCP Scope
-Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.10.50 -EndRange 192.168.10.254 -SubnetMask 255.255.255.0 -State Active
-
-#Exclude address range
-Add-DhcpServerv4ExclusionRange -ScopeID 192.168.10.0 -StartRange 192.168.10.1 -EndRange 192.168.10.49
-
-#Specify default gateway 
-Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.0 -ComputerName dhcp.ad.contoso.com
-
-#Specify default DNS server
-Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
-
-#Set a DHCP reservation
-Set-DhcpServerv4Reservation -ComputerName "dc1.ad.contoso.com" -IPAddress 192.168.10.11 -ScopeID 192.168.10.0 -Description "WSUS" -Name "wsus.ad.contoso.com"
 ```
