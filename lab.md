@@ -1,3 +1,10 @@
+# 20742 Lab
+|    VM   |   IP Address  |
+| ------- | ------------- |
+| `DC1`   | 192.168.10.10 |
+| `FS01`  | 192.168.10.11 |
+| `Client`| 192.168.10.50 |
+
 # Deploy VMs
 ```posh
 $VMNames = @(‘20742-DC1’,’20742-FS01’,’20742-WinClient’)
@@ -241,7 +248,7 @@ Restart-Computer -Force
 
 #Set IP Address (Change InterfaceIndex param if there's more than one NIC)
 $Params = @{
-  IPAddress = "192.168.10.13"
+  IPAddress = "192.168.10.11"
   DefaultGateway = "192.168.10.1"
   PrefixLength = "24"
   InterfaceIndex = (Get-NetAdapter).InterfaceIndex
