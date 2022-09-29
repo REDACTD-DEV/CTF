@@ -2,12 +2,11 @@
 |    VM   |   IP Address  |
 | ------- | ------------- |
 | `DC1`   | 192.168.10.10 |
-| `FS01`  | 192.168.10.11 |
 | `Client`| 192.168.10.50 |
 
 # Deploy VMs
 ```posh
-$VMNames = @(‘20742-DC1’,’20742-FS01’,’20742-WinClient’)
+$VMNames = @(‘DC-01’,’CL-01’)
 Foreach ($VMName in $VMNames) {
     $Params = @{
         Name = $VMName
@@ -40,9 +39,9 @@ Foreach ($VMName in $VMNames) {
     #Add Installer ISO
     $Params = @{
         VMName = $VMName
-        Path = "E:\ISO\WINDOWS-SERVER-22.ISO"
+        Path = "E:\ISO\WINDOWS-SERVER-22.iso"
     }
-    if($VMName -eq "20742-WinClient") {$Params['Path'] = "E:\ISO\Windows-22H1.iso"}
+    if($VMName -eq "CL-01") {$Params['Path'] = "E:\ISO\Windows-22H1.iso"}
     Add-VMDvdDrive @Params
 
     #Create OS Drive
@@ -114,7 +113,7 @@ Set-DNSClientServerAddress @Params
 Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 
 #Configure server as a domain controller
-Install-ADDSForest -DomainName ad.contoso.com -DomainNetBIOSName AD -InstallDNS
+Install-ADDSForest -DomainName adf.com -DomainNetBIOSName ADF -InstallDNS
 ```
 
 ## DNS server configuration
@@ -132,7 +131,7 @@ netsh dhcp add securitygroups
 Restart-Service dhcpserver
 
 #Authorize DHCP Server in AD
-Add-DhcpServerInDC -DnsName dhcp.ad.contoso.com
+Add-DhcpServerInDC -DnsName adf.com
 
 #Notify Server Manager that DCHP installation is complete, since it doesn't do this automatically
 $Params = @{
@@ -143,38 +142,42 @@ $Params = @{
 Set-ItemProperty @Params
 
 #Configure DHCP Scope
-Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.10.50 -EndRange 192.168.10.254 -SubnetMask 255.255.255.0 -State Active
+Add-DhcpServerv4Scope -name "Corpnet" -StartRange 192.168.10.21 -EndRange 192.168.10.254 -SubnetMask 255.255.255.0 -State Active
 
 #Exclude address range
-Add-DhcpServerv4ExclusionRange -ScopeID 192.168.10.0 -StartRange 192.168.10.1 -EndRange 192.168.10.49
+Add-DhcpServerv4ExclusionRange -ScopeID 192.168.10.0 -StartRange 192.168.10.1 -EndRange 192.168.10.20
 
 #Specify default gateway 
-Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.0 -ComputerName dhcp.ad.contoso.com
+Set-DhcpServerv4OptionValue -OptionID 3 -Value 192.168.10.1 -ScopeID 192.168.10.0 -ComputerName adf.com
 
 #Specify default DNS server
 Set-DhcpServerv4OptionValue -DnsDomain ad.contoso.com -DnsServer 192.168.10.10
 
-#Set a DHCP reservation
-Set-DhcpServerv4Reservation -ComputerName "dc1.ad.contoso.com" -IPAddress 192.168.10.11 -ScopeID 192.168.10.0 -Description "WSUS" -Name "wsus.ad.contoso.com"
+#Set DHCP reservations
+Set-DhcpServerv4Reservation -ComputerName "wsus.adf.com" -IPAddress 192.168.10.11 -ScopeID 192.168.10.0 -Description "WSUS" -Name "wsus.adf.com"
+Set-DhcpServerv4Reservation -ComputerName "fs01.adf.com" -IPAddress 192.168.10.12 -ScopeID 192.168.10.0 -Description "FS01" -Name "fs01.adf.com"
+Set-DhcpServerv4Reservation -ComputerName "fs02.adf.com" -IPAddress 192.168.10.13 -ScopeID 192.168.10.0 -Description "fs02" -Name "fs02.adf.com"
 ```
 
 ## Basic AD Configuration
 ```posh
 #Create OU's
 #Base OU
-New-ADOrganizationalUnit “Contoso” –path “DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “ADF” –path “DC=adf,DC=com”
 #Devices
-New-ADOrganizationalUnit “Devices” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “Servers” –path “OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “Workstations” –path “OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Devices” –path “OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Servers” –path “OU=Devices,OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Workstations” –path “OU=Devices,OU=ADF,DC=adf,DC=com”
 #Users
-New-ADOrganizationalUnit “Users” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “Admins” –path “OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “Employees” –path “OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Users” –path “OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Admins” –path “OU=Users,OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Navy” –path “OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Army” –path “OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “Air Force” –path “OU=ADF,DC=adf,DC=com”
 #Groups
-New-ADOrganizationalUnit “Groups” –path “OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “SecurityGroups” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
-New-ADOrganizationalUnit “DistributionLists” –path “OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com”
+New-ADOrganizationalUnit “Groups” –path “OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “SecurityGroups” –path “OU=Groups,OU=ADF,DC=adf,DC=com”
+New-ADOrganizationalUnit “DistributionLists” –path “OU=Groups,OU=ADF,DC=adf,DC=com”
 ```
 
 ## Create users
@@ -192,24 +195,49 @@ New-ADUser @Params
 #Add admin to Domain Admins group
 Add-ADGroupMember -Identity "Domain Admins" -Members "Admin-John.Smith"
 
-#New domain user
+#New domain users
 $Params = @{
     Name = "John.Smith"
     AccountPassword = (Read-Host -AsSecureString "Enter Password")
     Enabled = $true
-    ChangePasswordAtLogon = $true
+    ChangePasswordAtLogon = $false
+    PasswordNeverExpires = $true
     DisplayName = "John Smith"
     Company = "Contoso"
     Department = "Information Technology"
-    Path = “OU=Employees,OU=Users,OU=Contoso,DC=ad,DC=contoso,DC=com”
+    Path = “OU=Army,OU=ADF,DC=adf,DC=com”
 }
 New-ADUser @Params
-#Will have issues logging in through Hyper-V Enhanced Session Mode if not in this group
-Add-ADGroupMember -Identity "Remote Desktop Users" -Members "John.Smith"
+
+$Params = @{
+    Name = "Jane.Doe"
+    AccountPassword = (Read-Host -AsSecureString "Enter Password")
+    Enabled = $true
+    ChangePasswordAtLogon = $false
+    PasswordNeverExpires = $true
+    DisplayName = "Jane Doe"
+    Company = "Contoso"
+    Department = "Accounting"
+    Path = “OU=Navy,OU=ADF,DC=adf,DC=com”
+}
+New-ADUser @Params
+
+$Params = @{
+    Name = "Jimmy.Neutron"
+    AccountPassword = (Read-Host -AsSecureString "Enter Password")
+    Enabled = $true
+    ChangePasswordAtLogon = $false
+    PasswordNeverExpires = $true
+    DisplayName = "Jimmy Neutron"
+    Company = "Contoso"
+    Department = "Sales"
+    Path = “OU=Air Force,OU=ADF,DC=adf,DC=com”
+}
+New-ADUser @Params
 
 #Add Company SGs and add members to it
-New-ADGroup -Name "All-Staff" -SamAccountName "All-Staff" -GroupCategory Security -GroupScope Global -DisplayName "All-Staff" -Path "OU=SecurityGroups,OU=Groups,OU=Contoso,DC=ad,DC=contoso,DC=com" -Description "Members of this group are employees of Contoso"
-Add-ADGroupMember -Identity "All-Staff" -Members "John.Smith"
+New-ADGroup -Name "All-Staff" -SamAccountName "All-Staff" -GroupCategory Security -GroupScope Global -DisplayName "All-Staff" -Path "OU=SecurityGroups,OU=Groups,OU=ADF,DC=adf,DC=com" -Description "Members of this group are employees of Contoso"
+Add-ADGroupMember -Identity "All-Staff" -Members "John.Smith","Jane.Doe","Jimmy.Neutron"
 ```
 
 # WinClient
@@ -224,7 +252,7 @@ Restart-Computer -Force
 #Run from an elevated powershell console
 $Params = @{
 	DomainName = "ad.contoso.com"
-	OUPath = "OU=Workstations,OU=Devices,OU=Contoso,DC=ad,DC=contoso,DC=com"
+	OUPath = "OU=Workstations,OU=Devices,OU=ADF,DC=adf,DC=com"
 	Credential = "ad.contoso.com\Administrator"
 	Force = $true
 	Restart = $true
